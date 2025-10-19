@@ -3,12 +3,12 @@ import { Lead } from "@/types/lead";
 const STORAGE_KEY = "settlo_leads";
 
 export const getLeads = (): Lead[] => {
-  const stored = sessionStorage.getItem(STORAGE_KEY);
+  const stored = localStorage.getItem(STORAGE_KEY);
   return stored ? JSON.parse(stored) : [];
 };
 
 export const saveLeads = (leads: Lead[]): void => {
-  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
 };
 
 export const addLead = (lead: Omit<Lead, "id">): Lead => {
