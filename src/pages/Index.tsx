@@ -1,13 +1,25 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import Layout from "@/components/Layout";
+import LeadForm from "@/components/LeadForm";
 
 const Index = () => {
+  const [refreshKey, setRefreshKey] = useState(0);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <Layout>
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
+            Lead Management System
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Capture and organize your leads efficiently
+          </p>
+        </div>
+
+        <LeadForm key={refreshKey} onLeadAdded={() => setRefreshKey((k) => k + 1)} />
       </div>
-    </div>
+    </Layout>
   );
 };
 
