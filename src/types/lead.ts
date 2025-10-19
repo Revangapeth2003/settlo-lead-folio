@@ -6,5 +6,6 @@ export interface Lead {
   coursePreferred: string;
   queries: string;
   phoneNo: string;
+  fees: string;
   date: string;
 }

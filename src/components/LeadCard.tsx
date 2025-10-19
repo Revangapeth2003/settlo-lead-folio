@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { updateLead, deleteLead } from "@/utils/storage";
 import { toast } from "sonner";
-import { Edit, Trash2, User, MapPin, Calendar, Phone, BookOpen, MessageSquare } from "lucide-react";
+import { Edit, Trash2, User, MapPin, Calendar, Phone, BookOpen, MessageSquare, DollarSign } from "lucide-react";
 
 interface LeadCardProps {
   lead: Lead;
@@ -68,6 +68,13 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
           <Phone className="h-4 w-4 text-primary" />
           <span className="text-muted-foreground">{lead.phoneNo}</span>
         </div>
+
+        {lead.fees && (
+          <div className="flex items-center gap-2 text-sm">
+            <DollarSign className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">{lead.fees}</span>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 text-sm">
           <Calendar className="h-4 w-4 text-primary" />
@@ -142,6 +149,15 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
                     id="edit-phone"
                     value={formData.phoneNo}
                     onChange={(e) => setFormData({ ...formData, phoneNo: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-fees">Fees</Label>
+                  <Input
+                    id="edit-fees"
+                    value={formData.fees}
+                    onChange={(e) => setFormData({ ...formData, fees: e.target.value })}
                   />
                 </div>
 

@@ -18,6 +18,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
     coursePreferred: "",
     queries: "",
     phoneNo: "",
+    fees: "",
     date: today,
   });
 
@@ -41,6 +42,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
       coursePreferred: "",
       queries: "",
       phoneNo: "",
+      fees: "",
       date: today,
     });
 
@@ -112,6 +114,17 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
                 onChange={(e) => setFormData({ ...formData, phoneNo: e.target.value })}
                 placeholder="+1 234 567 8900"
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="fees">Fees</Label>
+              <Input
+                id="fees"
+                type="text"
+                value={formData.fees}
+                onChange={(e) => setFormData({ ...formData, fees: e.target.value })}
+                placeholder="$1000"
               />
             </div>
 
