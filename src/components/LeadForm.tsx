@@ -22,7 +22,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
     date: today,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.age || !formData.phoneNo) {
@@ -30,24 +30,29 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
       return;
     }
 
-    addLead({
-      ...formData,
-      age: parseInt(formData.age),
-    });
+    try {
+      await addLead({
+        ...formData,
+        age: parseInt(formData.age),
+      });
 
-    setFormData({
-      name: "",
-      age: "",
-      location: "",
-      coursePreferred: "",
-      queries: "",
-      phoneNo: "",
-      fees: "",
-      date: today,
-    });
+      setFormData({
+        name: "",
+        age: "",
+        location: "",
+        coursePreferred: "",
+        queries: "",
+        phoneNo: "",
+        fees: "",
+        date: today,
+      });
 
-    toast.success("Lead added successfully!");
-    onLeadAdded();
+      toast.success("Lead added successfully!");
+      onLeadAdded();
+    } catch (error) {
+      toast.error("Failed to add lead. Please try again.");
+      console.error("Error adding lead:", error);
+    }
   };
 
   return (

@@ -1,8 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, Home } from "lucide-react";
+import { Users, Home, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
@@ -19,28 +22,41 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             </Link>
 
             <div className="flex gap-2">
-              <Link
-                to="/"
-                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                  location.pathname === "/"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                }`}
-              >
-                <Home className="h-4 w-4" />
-                Home
-              </Link>
-              <Link
-                to="/leads"
-                className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                  location.pathname === "/leads"
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                }`}
-              >
-                <Users className="h-4 w-4" />
-                Leads
-              </Link>
+              {user && (
+                <>
+                  <Link
+                    to="/"
+                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      location.pathname === "/"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
+                  >
+                    <Home className="h-4 w-4" />
+                    Home
+                  </Link>
+                  <Link
+                    to="/leads"
+                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      location.pathname === "/leads"
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
+                  >
+                    <Users className="h-4 w-4" />
+                    Leads
+                  </Link>
+                  <Button
+                    onClick={signOut}
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

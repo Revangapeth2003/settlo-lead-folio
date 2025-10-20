@@ -1,38 +1,86 @@
 import { Lead } from "@/types/lead";
+import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "settlo_leads";
+export const getLeads = async (): Promise<Lead[]> => {
+  const { data, error } = await supabase
+    .from("leads")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-export const getLeads = (): Lead[] => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  return stored ? JSON.parse(stored) : [];
+  if (error) throw error;
+  
+  return data.map(lead => ({
+    id: lead.id,
+    name: lead.name,
+    age: lead.age,
+    location: lead.location,
+    coursePreferred: lead.course_preferred,
+    queries: lead.queries || "",
+    phoneNo: lead.phone_no,
+    fees: lead.fees,
+    date: lead.date,
+  }));
 };
 
-export const saveLeads = (leads: Lead[]): void => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(leads));
-};
+export const addLead = async (lead: Omit<Lead, "id">): Promise<Lead> => {
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  if (!user) throw new Error("User not authenticated");
 
-export const addLead = (lead: Omit<Lead, "id">): Lead => {
-  const leads = getLeads();
-  const newLead: Lead = {
-    ...lead,
-    id: crypto.randomUUID(),
+  const { data, error } = await supabase
+    .from("leads")
+    .insert({
+      user_id: user.id,
+      name: lead.name,
+      age: lead.age,
+      location: lead.location,
+      course_preferred: lead.coursePreferred,
+      queries: lead.queries,
+      phone_no: lead.phoneNo,
+      fees: lead.fees,
+      date: lead.date,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  return {
+    id: data.id,
+    name: data.name,
+    age: data.age,
+    location: data.location,
+    coursePreferred: data.course_preferred,
+    queries: data.queries || "",
+    phoneNo: data.phone_no,
+    fees: data.fees,
+    date: data.date,
   };
-  leads.push(newLead);
-  saveLeads(leads);
-  return newLead;
 };
 
-export const updateLead = (id: string, updatedLead: Omit<Lead, "id">): void => {
-  const leads = getLeads();
-  const index = leads.findIndex((lead) => lead.id === id);
-  if (index !== -1) {
-    leads[index] = { ...updatedLead, id };
-    saveLeads(leads);
-  }
+export const updateLead = async (id: string, updatedLead: Omit<Lead, "id">): Promise<void> => {
+  const { error } = await supabase
+    .from("leads")
+    .update({
+      name: updatedLead.name,
+      age: updatedLead.age,
+      location: updatedLead.location,
+      course_preferred: updatedLead.coursePreferred,
+      queries: updatedLead.queries,
+      phone_no: updatedLead.phoneNo,
+      fees: updatedLead.fees,
+      date: updatedLead.date,
+    })
+    .eq("id", id);
+
+  if (error) throw error;
 };
 
-export const deleteLead = (id: string): void => {
-  const leads = getLeads();
-  const filtered = leads.filter((lead) => lead.id !== id);
-  saveLeads(filtered);
+export const deleteLead = async (id: string): Promise<void> => {
+  const { error } = await supabase
+    .from("leads")
+    .delete()
+    .eq("id", id);
+
+  if (error) throw error;
 };

@@ -20,17 +20,27 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(lead);
 
-  const handleUpdate = () => {
-    updateLead(lead.id, formData);
-    toast.success("Lead updated successfully!");
-    setIsEditing(false);
-    onUpdate();
+  const handleUpdate = async () => {
+    try {
+      await updateLead(lead.id, formData);
+      toast.success("Lead updated successfully!");
+      setIsEditing(false);
+      onUpdate();
+    } catch (error) {
+      toast.error("Failed to update lead. Please try again.");
+      console.error("Error updating lead:", error);
+    }
   };
 
-  const handleDelete = () => {
-    deleteLead(lead.id);
-    toast.success("Lead deleted successfully!");
-    onUpdate();
+  const handleDelete = async () => {
+    try {
+      await deleteLead(lead.id);
+      toast.success("Lead deleted successfully!");
+      onUpdate();
+    } catch (error) {
+      toast.error("Failed to delete lead. Please try again.");
+      console.error("Error deleting lead:", error);
+    }
   };
 
   return (

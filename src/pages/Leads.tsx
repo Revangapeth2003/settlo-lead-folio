@@ -1,20 +1,47 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Layout from "@/components/Layout";
 import LeadCard from "@/components/LeadCard";
 import { getLeads } from "@/utils/storage";
 import { Lead } from "@/types/lead";
-import { Users } from "lucide-react";
+import { Users, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
-  const loadLeads = () => {
-    setLeads(getLeads());
+  const loadLeads = async () => {
+    try {
+      setLoading(true);
+      const data = await getLeads();
+      setLeads(data);
+    } catch (error) {
+      console.error("Error loading leads:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    loadLeads();
-  }, []);
+    if (!authLoading && !user) {
+      navigate("/auth");
+    } else if (user) {
+      loadLeads();
+    }
+  }, [user, authLoading, navigate]);
+
+  if (authLoading || loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
