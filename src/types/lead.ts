@@ -4,6 +4,7 @@ export interface Lead {
   age: number;
   location: string;
   coursePreferred: string;
+  qualification: string;
   queries: string;
   phoneNo: string;
   fees: string;
