@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { updateLead, deleteLead } from "@/utils/storage";
 import { toast } from "sonner";
-import { Edit, Trash2, User, MapPin, Calendar, Phone, BookOpen, MessageSquare, DollarSign } from "lucide-react";
+import { Edit, Trash2, User, MapPin, Calendar, Phone, MessageSquare, IndianRupee, GraduationCap } from "lucide-react";
 
 interface LeadCardProps {
   lead: Lead;
@@ -68,9 +68,16 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
         )}
 
         {lead.coursePreferred && (
-          <div className="flex items-center gap-2 text-sm">
-            <BookOpen className="h-4 w-4 text-primary" />
+          <div className="flex items-start gap-2 text-sm">
+            <span className="font-medium text-muted-foreground">Preferred Course:</span>
             <span className="text-muted-foreground">{lead.coursePreferred}</span>
+          </div>
+        )}
+
+        {lead.qualification && (
+          <div className="flex items-center gap-2 text-sm">
+            <GraduationCap className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">{lead.qualification}</span>
           </div>
         )}
 
@@ -81,7 +88,7 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
 
         {lead.fees && (
           <div className="flex items-center gap-2 text-sm">
-            <DollarSign className="h-4 w-4 text-primary" />
+            <IndianRupee className="h-4 w-4 text-primary" />
             <span className="text-muted-foreground">{lead.fees}</span>
           </div>
         )}
@@ -150,6 +157,15 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
                     id="edit-course"
                     value={formData.coursePreferred}
                     onChange={(e) => setFormData({ ...formData, coursePreferred: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-qualification">Qualification</Label>
+                  <Input
+                    id="edit-qualification"
+                    value={formData.qualification}
+                    onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
                   />
                 </div>
 

@@ -16,6 +16,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
     age: "",
     location: "",
     coursePreferred: "",
+    qualification: "",
     queries: "",
     phoneNo: "",
     fees: "",
@@ -41,6 +42,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
         age: "",
         location: "",
         coursePreferred: "",
+        qualification: "",
         queries: "",
         phoneNo: "",
         fees: "",
@@ -107,6 +109,16 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
                 value={formData.coursePreferred}
                 onChange={(e) => setFormData({ ...formData, coursePreferred: e.target.value })}
                 placeholder="Web Development"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="qualification">Qualification</Label>
+              <Input
+                id="qualification"
+                value={formData.qualification}
+                onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
+                placeholder="Bachelor's Degree"
               />
             </div>
 

@@ -25,6 +25,7 @@ export type Database = {
           location: string
           name: string
           phone_no: string
+          qualification: string | null
           queries: string | null
           user_id: string
         }
@@ -38,6 +39,7 @@ export type Database = {
           location: string
           name: string
           phone_no: string
+          qualification?: string | null
           queries?: string | null
           user_id: string
         }
@@ -51,6 +53,7 @@ export type Database = {
           location?: string
           name?: string
           phone_no?: string
+          qualification?: string | null
           queries?: string | null
           user_id?: string
         }
