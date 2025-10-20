@@ -53,7 +53,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     className="flex items-center gap-2"
                   >
                     <LogOut className="h-4 w-4" />
-                    Sign Out
+                    <span className="hidden sm:inline">Sign Out</span>
                   </Button>
                 </>
               )}
