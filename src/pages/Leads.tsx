@@ -4,12 +4,15 @@ import Layout from "@/components/Layout";
 import LeadCard from "@/components/LeadCard";
 import { getLeads } from "@/utils/storage";
 import { Lead } from "@/types/lead";
-import { Users, Loader2 } from "lucide-react";
+import { Users, Loader2, Search, RefreshCw } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
@@ -33,6 +36,17 @@ const Leads = () => {
     }
   }, [user, authLoading, navigate]);
 
+  const filteredLeads = leads.filter((lead) => {
+    const query = searchQuery.toLowerCase();
+    return (
+      lead.name.toLowerCase().includes(query) ||
+      lead.phoneNo.includes(query) ||
+      lead.coursePreferred.toLowerCase().includes(query) ||
+      lead.location.toLowerCase().includes(query) ||
+      (lead.qualification && lead.qualification.toLowerCase().includes(query))
+    );
+  });
+
   if (authLoading || loading) {
     return (
       <Layout>
@@ -46,29 +60,58 @@ const Leads = () => {
   return (
     <Layout>
       <div className="space-y-8">
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-hover text-primary-foreground">
-            <Users className="h-6 w-6" />
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-hover text-primary-foreground">
+              <Users className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">All Leads</h1>
+              <p className="text-muted-foreground">
+                {leads.length} {leads.length === 1 ? "lead" : "leads"} in your pipeline
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">All Leads</h1>
-            <p className="text-muted-foreground">
-              {leads.length} {leads.length === 1 ? "lead" : "leads"} in your pipeline
-            </p>
+          
+          <div className="flex gap-2">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search leads..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+            <Button
+              onClick={loadLeads}
+              variant="outline"
+              size="icon"
+              className="shrink-0"
+              title="Refresh leads"
+            >
+              <RefreshCw className="h-4 w-4" />
+              <span className="sr-only">Refresh</span>
+            </Button>
           </div>
         </div>
 
-        {leads.length === 0 ? (
+        {filteredLeads.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
             <Users className="h-16 w-16 text-muted-foreground/50 mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No leads yet</h3>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              {searchQuery ? "No leads found" : "No leads yet"}
+            </h3>
             <p className="text-muted-foreground max-w-md">
-              Start adding leads from the home page to see them here. Your lead cards will appear in a beautiful grid layout.
+              {searchQuery
+                ? "Try adjusting your search query to find what you're looking for."
+                : "Start adding leads from the home page to see them here. Your lead cards will appear in a beautiful grid layout."}
             </p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <LeadCard key={lead.id} lead={lead} onUpdate={loadLeads} />
             ))}
           </div>
