@@ -4,15 +4,17 @@ import Layout from "@/components/Layout";
 import LeadCard from "@/components/LeadCard";
 import { getLeads } from "@/utils/storage";
 import { Lead } from "@/types/lead";
-import { Users, Loader2, Search, RefreshCw } from "lucide-react";
+import { Users, Loader2, Search, RefreshCw, Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
@@ -38,14 +40,23 @@ const Leads = () => {
 
   const filteredLeads = leads.filter((lead) => {
     const query = searchQuery.toLowerCase();
-    return (
+    const matchesSearch = (
       lead.name.toLowerCase().includes(query) ||
       lead.phoneNo.includes(query) ||
       lead.coursePreferred.toLowerCase().includes(query) ||
       lead.location.toLowerCase().includes(query) ||
       (lead.qualification && lead.qualification.toLowerCase().includes(query))
     );
+    
+    const matchesStatus = statusFilter === "all" || lead.status === statusFilter;
+    
+    return matchesSearch && matchesStatus;
   });
+
+  const getLeadCountByStatus = (status: string) => {
+    if (status === "all") return leads.length;
+    return leads.filter(lead => lead.status === status).length;
+  };
 
   if (authLoading || loading) {
     return (
@@ -74,6 +85,13 @@ const Leads = () => {
           </div>
           
           <div className="flex gap-2">
+            <Button
+              onClick={() => navigate("/")}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">Add Lead</span>
+            </Button>
             <div className="relative flex-1 sm:w-64">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -97,25 +115,44 @@ const Leads = () => {
           </div>
         </div>
 
-        {filteredLeads.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
-            <Users className="h-16 w-16 text-muted-foreground/50 mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">
-              {searchQuery ? "No leads found" : "No leads yet"}
-            </h3>
-            <p className="text-muted-foreground max-w-md">
-              {searchQuery
-                ? "Try adjusting your search query to find what you're looking for."
-                : "Start adding leads from the home page to see them here. Your lead cards will appear in a beautiful grid layout."}
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredLeads.map((lead) => (
-              <LeadCard key={lead.id} lead={lead} onUpdate={loadLeads} />
-            ))}
-          </div>
-        )}
+        <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="all">
+              All Leads ({getLeadCountByStatus("all")})
+            </TabsTrigger>
+            <TabsTrigger value="on_process">
+              On Process ({getLeadCountByStatus("on_process")})
+            </TabsTrigger>
+            <TabsTrigger value="positive">
+              Positives ({getLeadCountByStatus("positive")})
+            </TabsTrigger>
+            <TabsTrigger value="completed">
+              Completed ({getLeadCountByStatus("completed")})
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value={statusFilter} className="mt-6">
+            {filteredLeads.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border bg-muted/30 p-12 text-center">
+                <Users className="h-16 w-16 text-muted-foreground/50 mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  {searchQuery ? "No leads found" : "No leads yet"}
+                </h3>
+                <p className="text-muted-foreground max-w-md">
+                  {searchQuery
+                    ? "Try adjusting your search query to find what you're looking for."
+                    : "Start adding leads from the home page to see them here. Your lead cards will appear in a beautiful grid layout."}
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {filteredLeads.map((lead) => (
+                  <LeadCard key={lead.id} lead={lead} onUpdate={loadLeads} />
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </Layout>
   );

@@ -10,6 +10,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { updateLead, deleteLead } from "@/utils/storage";
 import { toast } from "sonner";
 import { Edit, Trash2, User, MapPin, Calendar, Phone, MessageSquare, IndianRupee, GraduationCap } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 interface LeadCardProps {
   lead: Lead;
@@ -56,6 +58,9 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
               <p className="text-sm text-muted-foreground">Age: {lead.age}</p>
             </div>
           </div>
+          <Badge variant={lead.status === 'positive' ? 'default' : lead.status === 'completed' ? 'secondary' : 'outline'}>
+            {lead.status === 'on_process' ? 'On Process' : lead.status === 'positive' ? 'Positive' : 'Completed'}
+          </Badge>
         </div>
       </CardHeader>
 
@@ -195,6 +200,20 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="edit-status">Status</Label>
+                  <Select value={formData.status} onValueChange={(value: 'on_process' | 'positive' | 'completed') => setFormData({ ...formData, status: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="on_process">On Process</SelectItem>
+                      <SelectItem value="positive">Positive</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

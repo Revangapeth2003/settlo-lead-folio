@@ -27,6 +27,7 @@ export type Database = {
           phone_no: string
           qualification: string | null
           queries: string | null
+          status: string
           user_id: string
         }
         Insert: {
@@ -41,6 +42,7 @@ export type Database = {
           phone_no: string
           qualification?: string | null
           queries?: string | null
+          status?: string
           user_id: string
         }
         Update: {
@@ -55,6 +57,7 @@ export type Database = {
           phone_no?: string
           qualification?: string | null
           queries?: string | null
+          status?: string
           user_id?: string
         }
         Relationships: []

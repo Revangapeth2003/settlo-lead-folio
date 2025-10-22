@@ -20,6 +20,7 @@ export const getLeads = async (): Promise<Lead[]> => {
     phoneNo: lead.phone_no,
     fees: lead.fees,
     date: lead.date,
+    status: lead.status as 'on_process' | 'positive' | 'completed',
   }));
 };
 
@@ -41,6 +42,7 @@ export const addLead = async (lead: Omit<Lead, "id">): Promise<Lead> => {
       phone_no: lead.phoneNo,
       fees: lead.fees,
       date: lead.date,
+      status: lead.status,
     })
     .select()
     .single();
@@ -58,6 +60,7 @@ export const addLead = async (lead: Omit<Lead, "id">): Promise<Lead> => {
     phoneNo: data.phone_no,
     fees: data.fees,
     date: data.date,
+    status: data.status as 'on_process' | 'positive' | 'completed',
   };
 };
 
@@ -74,6 +77,7 @@ export const updateLead = async (id: string, updatedLead: Omit<Lead, "id">): Pro
       phone_no: updatedLead.phoneNo,
       fees: updatedLead.fees,
       date: updatedLead.date,
+      status: updatedLead.status,
     })
     .eq("id", id);
 

@@ -21,6 +21,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
     phoneNo: "",
     fees: "",
     date: today,
+    status: "on_process" as const,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,6 +48,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
         phoneNo: "",
         fees: "",
         date: today,
+        status: "on_process" as const,
       });
 
       toast.success("Lead added successfully!");
