@@ -9,9 +9,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { updateLead, deleteLead } from "@/utils/storage";
 import { toast } from "sonner";
-import { Edit, Trash2, User, MapPin, Calendar, Phone, MessageSquare, IndianRupee, GraduationCap } from "lucide-react";
+import { Edit, Trash2, User, MapPin, Calendar, Phone, MessageSquare, IndianRupee, GraduationCap, ChevronDown } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface LeadCardProps {
   lead: Lead;
@@ -45,6 +46,41 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
     }
   };
 
+  const handleStatusChange = async (newStatus: 'on_process' | 'positive' | 'completed') => {
+    try {
+      await updateLead(lead.id, { ...lead, status: newStatus });
+      toast.success("Status updated successfully!");
+      onUpdate();
+    } catch (error) {
+      toast.error("Failed to update status. Please try again.");
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'positive':
+        return 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20';
+      case 'completed':
+        return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20';
+      default:
+        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/20';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'on_process':
+        return 'On Process';
+      case 'positive':
+        return 'Positive';
+      case 'completed':
+        return 'Completed';
+      default:
+        return status;
+    }
+  };
+
   return (
     <Card className="group h-full shadow-[var(--shadow-card)] hover:shadow-[var(--shadow-card-hover)] transition-all duration-300 hover:-translate-y-1">
       <CardHeader className="pb-4">
@@ -58,9 +94,47 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
               <p className="text-sm text-muted-foreground">Age: {lead.age}</p>
             </div>
           </div>
-          <Badge variant={lead.status === 'positive' ? 'default' : lead.status === 'completed' ? 'secondary' : 'outline'}>
-            {lead.status === 'on_process' ? 'On Process' : lead.status === 'positive' ? 'Positive' : 'Completed'}
-          </Badge>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`gap-1 ${getStatusColor(lead.status)}`}
+              >
+                {getStatusLabel(lead.status)}
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-40 bg-popover z-50">
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('on_process')}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-yellow-500" />
+                  On Process
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('positive')}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-green-500" />
+                  Positive
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('completed')}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-blue-500" />
+                  Completed
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
 
