@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Leads = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -115,8 +116,29 @@ const Leads = () => {
           </div>
         </div>
 
+        {/* Mobile Dropdown */}
+        <div className="block md:hidden mb-4">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-full">
+              <SelectValue>
+                {statusFilter === "all" && `All Leads (${getLeadCountByStatus("all")})`}
+                {statusFilter === "on_process" && `On Process (${getLeadCountByStatus("on_process")})`}
+                {statusFilter === "positive" && `Positives (${getLeadCountByStatus("positive")})`}
+                {statusFilter === "completed" && `Completed (${getLeadCountByStatus("completed")})`}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Leads ({getLeadCountByStatus("all")})</SelectItem>
+              <SelectItem value="on_process">On Process ({getLeadCountByStatus("on_process")})</SelectItem>
+              <SelectItem value="positive">Positives ({getLeadCountByStatus("positive")})</SelectItem>
+              <SelectItem value="completed">Completed ({getLeadCountByStatus("completed")})</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Desktop Tabs */}
         <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="hidden md:grid w-full grid-cols-4">
             <TabsTrigger value="all">
               All Leads ({getLeadCountByStatus("all")})
             </TabsTrigger>
