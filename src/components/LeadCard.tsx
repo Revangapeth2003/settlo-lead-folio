@@ -46,7 +46,7 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
     }
   };
 
-  const handleStatusChange = async (newStatus: 'on_process' | 'positive' | 'completed') => {
+  const handleStatusChange = async (newStatus: 'new' | 'on_process' | 'positive' | 'negative' | 'completed') => {
     try {
       await updateLead(lead.id, { ...lead, status: newStatus });
       toast.success("Status updated successfully!");
@@ -59,21 +59,31 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case 'new':
+        return 'bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-500/20';
+      case 'on_process':
+        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/20';
       case 'positive':
         return 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20';
+      case 'negative':
+        return 'bg-red-500/10 text-red-700 dark:text-red-400 hover:bg-red-500/20';
       case 'completed':
         return 'bg-blue-500/10 text-blue-700 dark:text-blue-400 hover:bg-blue-500/20';
       default:
-        return 'bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/20';
+        return 'bg-gray-500/10 text-gray-700 dark:text-gray-400 hover:bg-gray-500/20';
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
+      case 'new':
+        return 'New';
       case 'on_process':
         return 'On Process';
       case 'positive':
         return 'Positive';
+      case 'negative':
+        return 'Negative';
       case 'completed':
         return 'Completed';
       default:
@@ -107,6 +117,15 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-40 bg-popover z-50">
               <DropdownMenuItem 
+                onClick={() => handleStatusChange('new')}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-cyan-500" />
+                  New
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
                 onClick={() => handleStatusChange('on_process')}
                 className="cursor-pointer"
               >
@@ -122,6 +141,15 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500" />
                   Positive
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => handleStatusChange('negative')}
+                className="cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                  Negative
                 </div>
               </DropdownMenuItem>
               <DropdownMenuItem 
@@ -278,13 +306,15 @@ const LeadCard = ({ lead, onUpdate }: LeadCardProps) => {
 
                 <div className="space-y-2">
                   <Label htmlFor="edit-status">Status</Label>
-                  <Select value={formData.status} onValueChange={(value: 'on_process' | 'positive' | 'completed') => setFormData({ ...formData, status: value })}>
+                  <Select value={formData.status} onValueChange={(value: 'new' | 'on_process' | 'positive' | 'negative' | 'completed') => setFormData({ ...formData, status: value })}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="new">New</SelectItem>
                       <SelectItem value="on_process">On Process</SelectItem>
                       <SelectItem value="positive">Positive</SelectItem>
+                      <SelectItem value="negative">Negative</SelectItem>
                       <SelectItem value="completed">Completed</SelectItem>
                     </SelectContent>
                   </Select>

@@ -9,5 +9,5 @@ export interface Lead {
   phoneNo: string;
   fees: string;
   date: string;
-  status: 'on_process' | 'positive' | 'completed';
+  status: 'new' | 'on_process' | 'positive' | 'negative' | 'completed';
 }

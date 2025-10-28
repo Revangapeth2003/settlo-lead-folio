@@ -122,15 +122,19 @@ const Leads = () => {
             <SelectTrigger className="w-full">
               <SelectValue>
                 {statusFilter === "all" && `All Leads (${getLeadCountByStatus("all")})`}
+                {statusFilter === "new" && `New (${getLeadCountByStatus("new")})`}
                 {statusFilter === "on_process" && `On Process (${getLeadCountByStatus("on_process")})`}
                 {statusFilter === "positive" && `Positives (${getLeadCountByStatus("positive")})`}
+                {statusFilter === "negative" && `Negatives (${getLeadCountByStatus("negative")})`}
                 {statusFilter === "completed" && `Completed (${getLeadCountByStatus("completed")})`}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Leads ({getLeadCountByStatus("all")})</SelectItem>
+              <SelectItem value="new">New ({getLeadCountByStatus("new")})</SelectItem>
               <SelectItem value="on_process">On Process ({getLeadCountByStatus("on_process")})</SelectItem>
               <SelectItem value="positive">Positives ({getLeadCountByStatus("positive")})</SelectItem>
+              <SelectItem value="negative">Negatives ({getLeadCountByStatus("negative")})</SelectItem>
               <SelectItem value="completed">Completed ({getLeadCountByStatus("completed")})</SelectItem>
             </SelectContent>
           </Select>
@@ -138,15 +142,21 @@ const Leads = () => {
 
         {/* Desktop Tabs */}
         <Tabs value={statusFilter} onValueChange={setStatusFilter} className="w-full">
-          <TabsList className="hidden md:grid w-full grid-cols-4">
+          <TabsList className="hidden md:grid w-full grid-cols-6">
             <TabsTrigger value="all">
               All Leads ({getLeadCountByStatus("all")})
+            </TabsTrigger>
+            <TabsTrigger value="new">
+              New ({getLeadCountByStatus("new")})
             </TabsTrigger>
             <TabsTrigger value="on_process">
               On Process ({getLeadCountByStatus("on_process")})
             </TabsTrigger>
             <TabsTrigger value="positive">
               Positives ({getLeadCountByStatus("positive")})
+            </TabsTrigger>
+            <TabsTrigger value="negative">
+              Negatives ({getLeadCountByStatus("negative")})
             </TabsTrigger>
             <TabsTrigger value="completed">
               Completed ({getLeadCountByStatus("completed")})
