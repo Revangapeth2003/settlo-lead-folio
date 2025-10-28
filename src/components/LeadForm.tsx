@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { toast } from "sonner";
 import { Plus } from "lucide-react";
 
 const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
+  const navigate = useNavigate();
   const today = new Date().toISOString().split("T")[0];
   
   const [formData, setFormData] = useState({
@@ -53,6 +55,7 @@ const LeadForm = ({ onLeadAdded }: { onLeadAdded: () => void }) => {
 
       toast.success("Lead added successfully!");
       onLeadAdded();
+      navigate("/leads");
     } catch (error) {
       toast.error("Failed to add lead. Please try again.");
       console.error("Error adding lead:", error);
